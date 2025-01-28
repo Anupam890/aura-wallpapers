@@ -9,3 +9,15 @@ export const wp = (percentage: any) => {
 export const hp = (percentage: any) => {
     return (percentage * deviceHeight) / 100;
 };
+
+export const getColumnCount = ()=>{
+    if(deviceWidth>=1024){
+        return 4
+    }
+    if(deviceWidth>=768){
+        return 3
+    }
+    if(deviceWidth>=540){
+        return 2
+    }
+}

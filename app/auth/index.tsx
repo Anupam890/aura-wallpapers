@@ -1,4 +1,4 @@
-import { router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
@@ -7,41 +7,42 @@ import {
   Pressable,
   StyleSheet,
   StatusBar,
-  Alert,
 } from "react-native";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const router = useRouter();
+
   const handleRegister = () => {
     if (!name || !email || !password) {
-      Alert.alert("Error", "All fields are required!");
+      alert("All fields are required!");
       return;
     }
-    // Registration logic here (e.g., API call)
-    Alert.alert("Success", "Registered successfully!");
+    alert("Registered successfully!");
   };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <Text style={styles.title}>Register</Text>
+      <Text className="text-center text-5xl font-semibold">Pixify</Text>
+      <Text style={styles.title}>Create an Account</Text>
+
       <TextInput
         style={styles.input}
-        placeholder="Name"
+        placeholder="Full Name"
         value={name}
         onChangeText={setName}
-        placeholderTextColor="#aaa"
+        placeholderTextColor="#888"
       />
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        placeholderTextColor="#aaa"
+        placeholderTextColor="#888"
         keyboardType="email-address"
       />
       <TextInput
@@ -49,19 +50,28 @@ const Register = () => {
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
-        placeholderTextColor="#aaa"
+        placeholderTextColor="#888"
         secureTextEntry
       />
+
       <Pressable style={styles.registerButton} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
+        <Text style={styles.buttonText}>Sign Up</Text>
       </Pressable>
+
+      <View style={styles.dividerContainer}>
+        <View style={styles.divider} />
+        <Text style={styles.dividerText}>OR</Text>
+        <View style={styles.divider} />
+      </View>
+
+      <Pressable style={styles.googleButton}>
+        <Text style={styles.googleButtonText}>Continue with Google</Text>
+      </Pressable>
+
       <Text style={styles.footerText}>
         Already have an account?{" "}
-        <Text
-          style={styles.link}
-          onPress={() => router.push("login")}
-        >
-          Login
+        <Text style={styles.link} onPress={() => router.push("login")}>
+          Log in
         </Text>
       </Text>
     </View>
@@ -76,33 +86,60 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 30,
     color: "#333",
   },
   input: {
     backgroundColor: "#fff",
     borderColor: "#ddd",
     borderWidth: 1,
-    borderRadius: 8,
-    padding: 15,
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 15,
     fontSize: 16,
     color: "#333",
   },
   registerButton: {
     backgroundColor: "#000",
-    padding: 15,
-    borderRadius: 8,
+    padding: 16,
+    borderRadius: 12,
     alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "600",
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#ddd",
+  },
+  dividerText: {
+    marginHorizontal: 10,
+    color: "#888",
+    fontSize: 14,
+  },
+  googleButton: {
+    backgroundColor: "#DB4437",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  googleButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
   footerText: {
     textAlign: "center",
@@ -111,7 +148,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   link: {
-    color: "#4caf50",
+    color: "#007AFF",
     fontWeight: "bold",
   },
 });

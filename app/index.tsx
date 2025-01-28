@@ -40,7 +40,7 @@ import {
             entering={FadeInDown.delay(400).springify()}
             style={styles.title}
           >
-            Aura
+            pixify
           </Animated.Text>
           <Animated.Text
             entering={FadeInDown.delay(500).springify()}

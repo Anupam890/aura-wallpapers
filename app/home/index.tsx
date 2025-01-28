@@ -6,26 +6,42 @@ import {
   ScrollView,
   TextInput,
 } from "react-native";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Feather, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { hp, wp } from "@/constants/resolution";
 import { theme } from "@/constants/theme";
-import { useState,useRef } from "react";
 import Categories from "@/components/categories";
+import { fetchImages } from "@/api/pixabay";
+import ImageGrid from "@/components/imageGrid"; // Fixed import
 
-const HomePage = () => {
+const HomePage: React.FC = () => {
   const { top } = useSafeAreaInsets();
   const paddingTop = top > 0 ? top + 10 : 30;
-  const [searchText, setSearchText] = useState("");
-  const [clearText,setClearText] = useState(false);
-  const searchRef = useRef(null);
-  const [activeCategory, setActiveCategory] = useState(null);
-  
-  const handleCategory = (cat) => {
+  const [searchText, setSearchText] = useState<string>("");
+  const searchRef = useRef<TextInput>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [images, setImages] = useState<any[]>([]);
+
+  const handleCategory = (cat: string) => {
     setActiveCategory(cat);
-  }
+  };
+
   console.log(activeCategory);
+
+  const getImagesServer = async (
+    params: { page: number } = { page: 1 },
+    append: boolean = false
+  ) => {
+    try {
+      let res = await fetchImages(params);
+      if (res.success && res.data.hits) {
+        setImages((prevImages) => (append ? [...prevImages, ...res.data.hits] : res.data.hits));
+      }
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  };
 
   return (
     <View style={[styles.container, { paddingTop }]}>
@@ -40,18 +56,11 @@ const HomePage = () => {
             size={24}
             color={theme.colors.neutral(0.7)}
           />
-          {/* Fixed the icon name */}
         </Pressable>
       </View>
       <ScrollView contentContainerStyle={{ gap: 15 }}>
         <View style={styles.searchBar}>
-          <View>
-            <Feather
-              name="search"
-              size={24}
-              color={theme.colors.neutral(0.4)}
-            />
-          </View>
+          <Feather name="search" size={24} color={theme.colors.neutral(0.4)} />
           <TextInput
             placeholder="Search for Image..."
             style={styles.SearchInput}
@@ -60,19 +69,14 @@ const HomePage = () => {
             onChangeText={(text) => setSearchText(text)}
           />
           {searchText && (
-            <Pressable style={styles.closeIcon}>
-              <Ionicons
-                name="close"
-                size={24}
-                color={theme.colors.neutral(0.4)}
-              />
+            <Pressable style={styles.closeIcon} onPress={() => setSearchText("")}>
+              <Ionicons name="close" size={24} color={theme.colors.neutral(0.4)} />
             </Pressable>
           )}
         </View>
-        <View >
-          <Categories activeCategory={activeCategory} handleCategory={handleCategory} />
-        </View>
+        <Categories activeCategory={activeCategory} handleCategory={handleCategory} />
       </ScrollView>
+      <View>{images.length > 0 && <ImageGrid images={images} />}</View>
     </View>
   );
 };
@@ -90,13 +94,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: hp(4),
-    fontWeight: "semibold",
+    fontWeight: "600", // Fixed font weight
     color: theme.colors.neutral(0.9),
   },
   searchBar: {
     marginHorizontal: wp(4),
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: theme.colors.white,
     borderRadius: theme.radius.lg,

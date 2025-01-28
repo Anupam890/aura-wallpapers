@@ -1,10 +1,17 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { data } from '@/constants/data';
-import { theme } from '@/constants/theme';
-import { hp } from '@/constants/resolution';
+import React from "react";
+import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
+import { data } from "@/constants/data";
+import { theme } from "@/constants/theme";
+import { hp } from "@/constants/resolution";
+import Animated, { FadeInRight } from "react-native-reanimated";
+import Index from "@/app";
 
-const Categories = () => {
+interface CategoriesProps {
+  activeCategory: string | null;
+  handleCategory: (category: string | null) => void;
+}
+
+const Categories: React.FC<CategoriesProps> = ({ activeCategory, handleCategory }) => {
   return (
     <FlatList
       horizontal
@@ -12,16 +19,33 @@ const Categories = () => {
       showsHorizontalScrollIndicator={false}
       data={data.categories}
       keyExtractor={(item) => item}
-      renderItem={({ item }) => <CategoryItem title={item} />}
+      renderItem={({ item }) => (
+        <CategoryItem
+          title={item}
+          isActive={activeCategory === item}
+          handleChangeCategory={handleCategory}
+        />
+      )}
     />
   );
 };
 
-const CategoryItem = ({ title }) => {
+interface CategoryItemProps {
+  title: string;
+  isActive: boolean;
+  handleChangeCategory: (category: string | null) => void;
+  index: number;
+}
+
+const CategoryItem: React.FC<CategoryItemProps> = ({ title,index, isActive, handleChangeCategory }) => {
+  let color = isActive ? theme.colors.white : theme.colors.neutral(0.8);
+  let bgColor = isActive ? theme.colors.neutral(0.8) : theme.colors.white;
   return (
-    <View style={styles.categoryItem}>
-      <Text style={styles.categoryText}>{title}</Text>
-    </View>
+    <Animated.View entering={FadeInRight.delay(index*200).duration(1000).springify().damping(14)} style={[styles.categoryItem, isActive && styles.activeCategory]}>
+      <Pressable onPress={() => handleChangeCategory(isActive ? null : title)}>
+        <Text style={styles.categoryText}>{title}</Text>
+      </Pressable>
+    </Animated.View>
   );
 };
 
@@ -35,13 +59,15 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: theme.radius.lg,
     marginHorizontal: 5,
-    borderCurve:'continuous',
     borderWidth: 1,
     paddingHorizontal: 15,
   },
+  activeCategory: {
+    borderColor: theme.colors.grayBg,
+    borderWidth: 2,
+  },
   categoryText: {
     fontSize: hp(1.8),
-   
   },
 });
 

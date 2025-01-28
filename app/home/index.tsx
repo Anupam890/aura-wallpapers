@@ -25,6 +25,7 @@ const HomePage = () => {
   const handleCategory = (cat) => {
     setActiveCategory(cat);
   }
+  console.log(activeCategory);
 
   return (
     <View style={[styles.container, { paddingTop }]}>
@@ -69,7 +70,7 @@ const HomePage = () => {
           )}
         </View>
         <View >
-          <Categories />
+          <Categories activeCategory={activeCategory} handleCategory={handleCategory} />
         </View>
       </ScrollView>
     </View>

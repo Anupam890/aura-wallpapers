@@ -19,6 +19,7 @@ export const categories: string[] = [
   "buildings",
   "business",
   "music",
+  "generate Image"
 ];
 
 export const data = {
